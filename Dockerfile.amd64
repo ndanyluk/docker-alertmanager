@@ -1,0 +1,19 @@
+FROM alpine:3.9.4
+
+#COPY qemu-x86_64-static         /usr/bin
+
+COPY bin/amtool_x86_64          /bin/amtool
+COPY bin/alertmanager_x86_64    /bin/alertmanager
+COPY conf/alertmanager.yml      /etc/alertmanager/
+COPY conf/docker-entrypoint.sh  /etc/alertmanager/
+
+RUN mkdir -p /alertmanager && \
+    chown -R 1000.1000 etc/alertmanager /alertmanager
+
+USER        1000
+EXPOSE      9093
+VOLUME      [ "/alertmanager" ]
+WORKDIR     /alertmanager
+ENTRYPOINT  [ "/etc/alertmanager/docker-entrypoint.sh" ]
+CMD         [ "--config.file=/etc/alertmanager/alertmanager.yml", \
+              "--storage.path=/alertmanager" ]

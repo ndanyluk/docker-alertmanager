@@ -1,0 +1,42 @@
+sudo: required
+
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce
+  - sudo service docker restart
+
+script:
+  - docker run --rm --privileged multiarch/qemu-user-static:register
+  - for target_arch in x86_64 aarch64 arm; do
+      curl -L -O https://github.com/multiarch/qemu-user-static/releases/download/v4.0.0/qemu-${target_arch}-static.tar.gz;
+      tar -xzvf qemu-${target_arch}-static.tar.gz;
+    done
+  - docker build -f Dockerfile.amd64 -t ndanyluk/alertmanager-amd64:$TRAVIS_BUILD_NUMBER .
+  - docker build -f Dockerfile.armv7 -t ndanyluk/alertmanager-armv7:$TRAVIS_BUILD_NUMBER .
+  - docker build -f Dockerfile.arm64 -t ndanyluk/alertmanager-arm64:$TRAVIS_BUILD_NUMBER .
+
+after_success:
+  - if [ -z "$DOCKER_USER" ]; then
+      echo "PR build, skipping Docker Hub push";
+    else
+    docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
+    docker tag ndanyluk/alertmanager-amd64:$TRAVIS_BUILD_NUMBER ndanyluk/node-exporter-amd64:0.17.0;
+    docker tag ndanyluk/alertmanager-amd64:$TRAVIS_BUILD_NUMBER ndanyluk/node-exporter-amd64:latest;
+    docker push ndanyluk/alertmanager-amd64:0.17.0;
+    docker push ndanyluk/alertmanager-amd64:latest;
+    docker tag ndanyluk/alertmanager-armv7:$TRAVIS_BUILD_NUMBER ndanyluk/node-exporter-armv7:0.17.0;
+    docker tag ndanyluk/alertmanager-armv7:$TRAVIS_BUILD_NUMBER ndanyluk/node-exporter-armv7:latest;
+    docker push ndanyluk/alertmanager-armv7:0.17.0;
+    docker push ndanyluk/alertmanager-armv7:latest;
+    docker tag ndanyluk/alertmanager-arm64:$TRAVIS_BUILD_NUMBER ndanyluk/node-exporter-arm64:0.17.0;
+    docker tag ndanyluk/alertmanager-arm64:$TRAVIS_BUILD_NUMBER ndanyluk/node-exporter-arm64:latest;
+    docker push ndanyluk/alertmanager-arm64:0.17.0;
+    docker push ndanyluk/alertmanager-arm64:latest;
+    fi
