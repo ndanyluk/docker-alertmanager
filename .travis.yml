@@ -27,16 +27,16 @@ after_success:
       echo "PR build, skipping Docker Hub push";
     else
     docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
-    docker tag ndanyluk/alertmanager-amd64:$TRAVIS_BUILD_NUMBER ndanyluk/node-exporter-amd64:0.17.0;
-    docker tag ndanyluk/alertmanager-amd64:$TRAVIS_BUILD_NUMBER ndanyluk/node-exporter-amd64:latest;
+    docker tag ndanyluk/alertmanager-amd64:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-amd64:0.17.0;
+    docker tag ndanyluk/alertmanager-amd64:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-amd64:latest;
     docker push ndanyluk/alertmanager-amd64:0.17.0;
     docker push ndanyluk/alertmanager-amd64:latest;
-    docker tag ndanyluk/alertmanager-armv7:$TRAVIS_BUILD_NUMBER ndanyluk/node-exporter-armv7:0.17.0;
-    docker tag ndanyluk/alertmanager-armv7:$TRAVIS_BUILD_NUMBER ndanyluk/node-exporter-armv7:latest;
+    docker tag ndanyluk/alertmanager-armv7:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-armv7:0.17.0;
+    docker tag ndanyluk/alertmanager-armv7:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-armv7:latest;
     docker push ndanyluk/alertmanager-armv7:0.17.0;
     docker push ndanyluk/alertmanager-armv7:latest;
-    docker tag ndanyluk/alertmanager-arm64:$TRAVIS_BUILD_NUMBER ndanyluk/node-exporter-arm64:0.17.0;
-    docker tag ndanyluk/alertmanager-arm64:$TRAVIS_BUILD_NUMBER ndanyluk/node-exporter-arm64:latest;
+    docker tag ndanyluk/alertmanager-arm64:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-arm64:0.17.0;
+    docker tag ndanyluk/alertmanager-arm64:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-arm64:latest;
     docker push ndanyluk/alertmanager-arm64:0.17.0;
     docker push ndanyluk/alertmanager-arm64:latest;
     fi
