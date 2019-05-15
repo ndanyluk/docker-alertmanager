@@ -44,7 +44,7 @@ install:
   - docker build -f Dockerfile.${target_arch} -t ndanyluk/alertmanager-${target_arch}:$TRAVIS_BUILD_NUMBER .
 
 script:
-  - sudo docker run -v /etc/hostname:/etc/nodename --name alertmanager ndanyluk/alertmanager-${target_arch}:$TRAVIS_BUILD_NUMBER
+  - sudo docker run -d -v /etc/hostname:/etc/nodename --name alertmanager ndanyluk/alertmanager-${target_arch}:$TRAVIS_BUILD_NUMBER
   - sudo docker ps | grep -q alertmanager
 
 after_success:
