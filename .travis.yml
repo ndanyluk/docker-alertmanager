@@ -37,7 +37,9 @@ install:
       cp amtool ../bin/amtool_${target_arch};
       cd ..;
     fi;
+  - cd conf
   - mv alertmanager.yml alertmanager_${target_arch}.yml
+  - cd ..
   - rm alertmanager-${target_version}.${target_platform}-${target_arch}.tar.gz;
   - rm -rf alertmanager-${target_version}.${target_platform}-${target_arch};
   - rm sha256sums.txt
