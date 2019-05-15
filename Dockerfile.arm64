@@ -1,11 +1,11 @@
 FROM arm64v8/alpine:3.9.4
 
-COPY qemu-aarch64-static        /usr/bin
+COPY qemu-aarch64-static          /usr/bin
 
-COPY bin/amtool_arm64           /bin/amtool
-COPY bin/alertmanager_arm64     /bin/alertmanager
-COPY conf/alertmanager.yml      /etc/alertmanager/
-COPY conf/docker-entrypoint.sh  /etc/alertmanager/
+COPY bin/amtool_arm64             /bin/amtool
+COPY bin/alertmanager_arm64       /bin/alertmanager
+COPY conf/alertmanager_arm64.yml  /etc/alertmanager/alertmanager.yml
+COPY conf/docker-entrypoint.sh    /etc/alertmanager/docker-entrypoint.sh
 
 RUN mkdir -p /alertmanager && \
     chown -R 1000.1000 etc/alertmanager /alertmanager

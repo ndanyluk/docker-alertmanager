@@ -21,11 +21,21 @@ script:
       curl -L -O https://github.com/multiarch/qemu-user-static/releases/download/v4.0.0/qemu-${target_arch}-static.tar.gz;
       tar -xzvf qemu-${target_arch}-static.tar.gz;
     done
-  - cd bin
+  - curl -LO https://github.com/prometheus/alertmanager/releases/download/v${target_version}/sha256sums.txt
   - for target_arch in amd64 arm64 arm; do
       curl -L -O https://github.com/prometheus/alertmanager/releases/download/v${target_verion}/alertmanager-${target_version}.linux-${target_arch}.tar.gz;
+      if [ ! -z $(sha256sum -c --ignore-missing sha256sums.txt) ]; then
+        tar -xzvf alertmanager-${target_version}.${target_platform}-${target_arch}.tar.gz;
+        cd alertmanager-${target_version}.${target_platform}-${target_arch};
+        cp alertmanager.yml ../conf/alertmanager_${target_arch}.yml;
+        cp alertmanager ../bin/alertmanager_${target_arch};
+        cp amtool ../bin/amtool_${target_arch};
+        cd ..;
+      fi;
+      rm alertmanager-${target_version}.${target_platform}-${target_arch}.tar.gz;
+      rm -rf alertmanager-${target_version}.${target_platform}-${target_arch};
     done
-  - cd ..
+  - rm sha256sums.txt
   - docker build -f Dockerfile.amd64 -t ndanyluk/alertmanager-amd64:$TRAVIS_BUILD_NUMBER .
   - docker build -f Dockerfile.armv7 -t ndanyluk/alertmanager-armv7:$TRAVIS_BUILD_NUMBER .
   - docker build -f Dockerfile.arm64 -t ndanyluk/alertmanager-arm64:$TRAVIS_BUILD_NUMBER .
@@ -37,16 +47,16 @@ after_success:
       echo "Branch build, skipping Docker Hub push";
     else
       docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
-      docker tag ndanyluk/alertmanager-amd64:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-amd64:0.17.0;
+      docker tag ndanyluk/alertmanager-amd64:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-amd64:${target_version};
       docker tag ndanyluk/alertmanager-amd64:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-amd64:latest;
-      docker push ndanyluk/alertmanager-amd64:0.17.0;
+      docker push ndanyluk/alertmanager-amd64:${target_version};
       docker push ndanyluk/alertmanager-amd64:latest;
-      docker tag ndanyluk/alertmanager-armv7:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-armv7:0.17.0;
+      docker tag ndanyluk/alertmanager-armv7:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-armv7:${target_version};
       docker tag ndanyluk/alertmanager-armv7:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-armv7:latest;
-      docker push ndanyluk/alertmanager-armv7:0.17.0;
+      docker push ndanyluk/alertmanager-armv7:${target_version};
       docker push ndanyluk/alertmanager-armv7:latest;
-      docker tag ndanyluk/alertmanager-arm64:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-arm64:0.17.0;
+      docker tag ndanyluk/alertmanager-arm64:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-arm64:${target_version};
       docker tag ndanyluk/alertmanager-arm64:$TRAVIS_BUILD_NUMBER ndanyluk/alertmanager-arm64:latest;
-      docker push ndanyluk/alertmanager-arm64:0.17.0;
+      docker push ndanyluk/alertmanager-arm64:${target_version};
       docker push ndanyluk/alertmanager-arm64:latest;
     fi
