@@ -14,6 +14,7 @@ before_install:
   - sudo apt-get update
   - sudo apt-get -y install docker-ce
   - sudo service docker restart
+  - mkdir bin
 
 script:
   - docker run --rm --privileged multiarch/qemu-user-static:register
