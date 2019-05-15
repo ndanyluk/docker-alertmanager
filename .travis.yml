@@ -6,7 +6,9 @@ services:
   - docker
 
 env:
-  - target_version=0.17.0  target_platform=linux
+  global:
+    - target_version=0.17.0
+    - target_platform=linux
 
 before_install:
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -14,7 +16,7 @@ before_install:
   - sudo apt-get update
   - sudo apt-get -y install docker-ce
   - sudo service docker restart
-  - sudo apt-get -y install sha256sum
+  - sudo apt-get -y install coreutils
   - mkdir bin
 
 script:
