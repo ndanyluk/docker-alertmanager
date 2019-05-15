@@ -24,7 +24,7 @@ before_install:
   - sudo service docker restart
   - mkdir bin
 
-script:
+install:
   - docker run --rm --privileged multiarch/qemu-user-static:register
   - curl -sLO https://github.com/multiarch/qemu-user-static/releases/download/v${qemu_version}/qemu-${qemu_arch}-static.tar.gz;
   - tar -xzvf qemu-${qemu_arch}-static.tar.gz;
@@ -42,7 +42,10 @@ script:
   - rm -rf alertmanager-${target_version}.${target_platform}-${target_arch};
   - rm sha256sums.txt
   - docker build -f Dockerfile.${target_arch} -t ndanyluk/alertmanager-${target_arch}:$TRAVIS_BUILD_NUMBER .
-  - sudo docker run -it -v /etc/hostname:/etc/nodename ndanyluk/alertmanager-${target_arch}:$TRAVIS_BUILD_NUMBER
+
+script:
+  - sudo docker run -v /etc/hostname:/etc/nodename --name alertmanager ndanyluk/alertmanager-${target_arch}:$TRAVIS_BUILD_NUMBER
+  - sudo docker ps | grep -q alertmanager
 
 after_success:
   - if [ -z "$DOCKER_USER" ]; then
