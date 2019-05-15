@@ -4,5 +4,5 @@ route:
 receivers:
 - name: 'pushover'
   pushover_configs:
-  - #user_key: <user_key>#
+    #- user_key: <user_key>#
     #token: <api_token>#
