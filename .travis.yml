@@ -33,18 +33,18 @@ install:
   - if [ ! -z "$(sha256sum -c sha256sums.txt 2> /dev/null | grep OK)" ]; then
       tar -xzvf alertmanager-${target_version}.${target_platform}-${target_arch}.tar.gz;
       cd alertmanager-${target_version}.${target_platform}-${target_arch};
-      cp alertmanager.yml ../conf/alertmanager_${target_arch}.yml;
       cp alertmanager ../bin/alertmanager_${target_arch};
       cp amtool ../bin/amtool_${target_arch};
       cd ..;
     fi;
+  - mv alertmanager.yml alertmanager_${target_arch}.yml
   - rm alertmanager-${target_version}.${target_platform}-${target_arch}.tar.gz;
   - rm -rf alertmanager-${target_version}.${target_platform}-${target_arch};
   - rm sha256sums.txt
   - docker build -f Dockerfile.${target_arch} -t ndanyluk/alertmanager-${target_arch}:$TRAVIS_BUILD_NUMBER .
 
 script:
-  - sudo docker run -d -v /etc/hostname:/etc/nodename --name alertmanager ndanyluk/alertmanager-${target_arch}:$TRAVIS_BUILD_NUMBER
+  - sudo docker run -d --name alertmanager ndanyluk/alertmanager-${target_arch}:$TRAVIS_BUILD_NUMBER
   - sudo docker ps | grep -q alertmanager
 
 after_success:
