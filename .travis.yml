@@ -11,10 +11,10 @@ env:
     - target_platform=linux
     - qemu_version=4.0.0
   matrix:
-    - target_arch=arm64 qemu_arch=x86_64
+    - target_arch=amd64 qemu_arch=x86_64
     - target_arch=armv7 qemu_arch=arm
     - target_arch=armv6 qemu_arch=arm
-    - target_arch=amd64 qemu_arch=aarch64
+    - target_arch=arm64 qemu_arch=aarch64
 
 before_install:
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -30,7 +30,7 @@ script:
   - tar -xzvf qemu-${qemu_arch}-static.tar.gz;
   - curl -sLO https://github.com/prometheus/alertmanager/releases/download/v${target_version}/sha256sums.txt
   - curl -sLO https://github.com/prometheus/alertmanager/releases/download/v${target_version}/alertmanager-${target_version}.${target_platform}-${target_arch}.tar.gz;
-  - if [ ! -z $(sha256sum -c sha256sums.txt 2> /dev/null | grep OK) ]; then
+  - if [ ! -z "$(sha256sum -c sha256sums.txt 2> /dev/null | grep OK)" ]; then
       tar -xzvf alertmanager-${target_version}.${target_platform}-${target_arch}.tar.gz;
       cd alertmanager-${target_version}.${target_platform}-${target_arch};
       cp alertmanager.yml ../conf/alertmanager_${target_arch}.yml;
