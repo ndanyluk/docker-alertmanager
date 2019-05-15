@@ -42,6 +42,7 @@ script:
   - rm -rf alertmanager-${target_version}.${target_platform}-${target_arch};
   - rm sha256sums.txt
   - docker build -f Dockerfile.${target_arch} -t ndanyluk/alertmanager-${target_arch}:$TRAVIS_BUILD_NUMBER .
+  - sudo docker run -it -v /etc/hostname:/etc/nodename ndanyluk/alertmanager-${target_arch}:$TRAVIS_BUILD_NUMBER
 
 after_success:
   - if [ -z "$DOCKER_USER" ]; then

@@ -1,0 +1,19 @@
+FROM arm32v6/alpine:3.9.4
+
+COPY qemu-arm-static              /usr/bin
+
+COPY bin/amtool_armv7             /bin/amtool
+COPY bin/alertmanager_armv7       /bin/alertmanager
+COPY conf/alertmanager_armv7.yml  /etc/alertmanager/alertmanager.yml
+COPY conf/docker-entrypoint.sh    /etc/alertmanager/docker-entrypoint.sh
+
+RUN mkdir -p /alertmanager && \
+    chown -R 1000.1000 etc/alertmanager /alertmanager
+
+USER        1000
+EXPOSE      9093
+VOLUME      [ "/alertmanager" ]
+WORKDIR     /alertmanager
+ENTRYPOINT  [ "/etc/alertmanager/docker-entrypoint.sh" ]
+CMD         [ "--config.file=/etc/alertmanager/alertmanager.yml", \
+              "--storage.path=/alertmanager" ]
