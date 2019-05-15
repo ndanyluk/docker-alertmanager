@@ -7,6 +7,7 @@ services:
 
 env:
   - target_version=0.17.0
+  - target_platform=linux
 
 before_install:
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -24,7 +25,7 @@ script:
     done
   - curl -LO https://github.com/prometheus/alertmanager/releases/download/v${target_version}/sha256sums.txt
   - for target_arch in amd64 arm64 arm; do
-      curl -L -O https://github.com/prometheus/alertmanager/releases/download/v${target_verion}/alertmanager-${target_version}.linux-${target_arch}.tar.gz;
+      curl -L -O https://github.com/prometheus/alertmanager/releases/download/v${target_verion}/alertmanager-${target_version}.${target_platform}-${target_arch}.tar.gz;
       if [ ! -z $(sha256sum -c --ignore-missing sha256sums.txt) ]; then
         tar -xzvf alertmanager-${target_version}.${target_platform}-${target_arch}.tar.gz;
         cd alertmanager-${target_version}.${target_platform}-${target_arch};
