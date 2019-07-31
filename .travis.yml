@@ -61,3 +61,21 @@ after_success:
       docker push ndanyluk/alertmanager-${target_arch}:${target_version};
       docker push ndanyluk/alertmanager-${target_arch}:latest;
     fi
+
+jobs:
+  include:
+    - stage: deploy
+      install: skip
+      script: skip
+      after_success:
+        - if [ -z "$DOCKER_USER" ]; then
+            echo "PR build, skipping Docker Hub push";
+          elif [ "$TRAVIS_BRANCH" != "master" ]; then
+            echo "Branch build, skipping Docker Hub push";
+          else
+            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
+            docker manifest create ndanyluk/alertmanager:${target_version} ndanyluk/alertmanager-armv6:${target_version} ndanyluk/alertmanager-arm64:${target_version} ndanyluk/alertmanager-amd64:${target_version};
+            docker manifest create ndanyluk/alertmanager:latest ndanyluk/alertmanager-armv6:latest ndanyluk/alertmanager-arm64:latest ndanyluk/alertmanager-amd64:latest;
+            docker manifest push ndanyluk/alertmanager:${target_version};
+            docker manifest push ndanyluk/alertmanager:latest;
+          fi
