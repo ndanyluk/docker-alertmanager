@@ -7,7 +7,7 @@ services:
 
 env:
   global:
-    - target_version=0.18.0
+    - target_version=0.20.0
     - target_platform=linux
     - qemu_version=4.2.0-6
   matrix:
