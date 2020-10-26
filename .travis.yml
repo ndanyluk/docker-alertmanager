@@ -9,8 +9,7 @@ env:
   global:
     - target_version=0.21.0
     - target_platform=linux
-    - qemu_version=5.0.0-2
-  matrix:
+    - qemu_version=5.1.0-5
     - target_arch=amd64 qemu_arch=x86_64
     - target_arch=armv7 qemu_arch=arm
     - target_arch=armv6 qemu_arch=arm
